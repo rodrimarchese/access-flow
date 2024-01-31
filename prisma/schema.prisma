@@ -11,11 +11,74 @@ datasource db {
 }
 
 model User {
-  id        String   @id @default(cuid()) @map("_id")
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  email     String   @unique
-  name      String?
+  id        String      @id @default(uuid()) @map("_id")
+  email     String      @unique
+  firstName String
+  lastName  String
+  phone     String?
+  events    UserEvent[]
+  roles     UserRole[]
 }
 
+model Event {
+  id           String             @id @default(uuid()) @map("_id")
+  date         DateTime
+  time         DateTime
+  totalTickets Int
+  tickets      Ticket[]
+  guests       Guest[]
+  bankAccounts EventBankAccount[]
+  users        UserEvent[]
+}
 
+model Ticket {
+  id        String  @id @default(uuid()) @map("_id")
+  price     Float
+  hash      String  @unique
+  isEnabled Boolean
+  eventId   String
+  Event     Event   @relation(fields: [eventId], references: [id])
+}
+
+model Guest {
+  id          String    @id @default(uuid()) @map("_id")
+  ticketId    String
+  checkedInAt DateTime?
+  checkedBy   String?
+  Event       Event?    @relation(fields: [eventId], references: [id])
+  eventId     String?
+}
+
+model BankAccount {
+  id             String             @id @default(uuid()) @map("_id")
+  identification String
+  ownerName      String
+  bankName       String
+  cbu            String
+  alias          String
+  events         EventBankAccount[]
+}
+
+model UserEvent {
+  id      String @id @default(uuid()) @map("_id")
+  userId  String
+  eventId String
+  User    User   @relation(fields: [userId], references: [id])
+  Event   Event  @relation(fields: [eventId], references: [id])
+}
+
+model UserRole {
+  id       String @id @default(uuid()) @map("_id")
+  userId   String
+  roleName String
+  eventId  String
+  User     User   @relation(fields: [userId], references: [id])
+}
+
+model EventBankAccount {
+  id            String      @id @default(uuid()) @map("_id")
+  eventId       String
+  bankAccountId String
+  Event         Event       @relation(fields: [eventId], references: [id])
+  BankAccount   BankAccount @relation(fields: [bankAccountId], references: [id])
+}
