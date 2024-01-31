@@ -5,8 +5,8 @@ import "./globals.css";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Access Flow",
-  description: "Access flow Access flow Access flow ",
+  title: "Access flow",
+  description: "Access flow Access flow Access flow",
 };
 
 export default function RootLayout({
