@@ -9,7 +9,7 @@ export const metadata: Metadata = {
   description: "Access flow Access flow Access flow",
 };
 
-export default function RootLayout({
+export default function HomeLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
