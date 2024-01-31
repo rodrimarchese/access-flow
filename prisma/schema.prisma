@@ -11,13 +11,16 @@ datasource db {
 }
 
 model User {
-  id        String      @id @default(uuid()) @map("_id")
-  email     String      @unique
-  firstName String
-  lastName  String
-  phone     String?
-  events    UserEvent[]
-  roles     UserRole[]
+  id               String        @id @default(uuid()) @map("_id")
+  email            String        @unique
+  firstName        String
+  lastName         String
+  phone            String?
+  events           UserEvent[]
+  roles            UserRole[]
+  validatedTickets Ticket[]      @relation("UserValidatedTickets")
+  checkedInTickets Ticket[]      @relation("UserCheckedInTickets")
+  BankAccount      BankAccount[]
 }
 
 model Event {
@@ -32,31 +35,46 @@ model Event {
 }
 
 model Ticket {
-  id        String  @id @default(uuid()) @map("_id")
-  price     Float
-  hash      String  @unique
-  isEnabled Boolean
-  eventId   String
-  Event     Event   @relation(fields: [eventId], references: [id])
+  id             String    @id @default(uuid()) @map("_id")
+  price          Float
+  hash           String    @unique
+  isEnabled      Boolean
+  eventId        String
+  checkedInAt    DateTime?
+  checkedInById  String?
+  validatedById  String?
+  checkedInBy    User?     @relation("UserCheckedInTickets", fields: [checkedInById], references: [id])
+  validatedBy    User?     @relation("UserValidatedTickets", fields: [validatedById], references: [id])
+  guestId        String?
+  guest          Guest?    @relation(fields: [guestId], references: [id])
+  Event          Event     @relation(fields: [eventId], references: [id])
+  sellUpToDate   DateTime?
+  SellUpToAmount Float?
 }
 
 model Guest {
-  id          String    @id @default(uuid()) @map("_id")
-  ticketId    String
-  checkedInAt DateTime?
-  checkedBy   String?
-  Event       Event?    @relation(fields: [eventId], references: [id])
-  eventId     String?
+  id               String   @id @default(uuid()) @map("_id")
+  name             String
+  email            String
+  phone            String?
+  purchaseDate     DateTime
+  ticketsPurchased Int
+  tickets          Ticket[]
+  Event            Event?   @relation(fields: [eventId], references: [id])
+  eventId          String?
 }
 
 model BankAccount {
-  id             String             @id @default(uuid()) @map("_id")
+  id             String                @id @default(uuid()) @map("_id")
   identification String
   ownerName      String
   bankName       String
   cbu            String
-  alias          String
+  alias          String?
   events         EventBankAccount[]
+  userId         String // Relación con User
+  User           User                  @relation(fields: [userId], references: [id])
+  roles          UserRoleBankAccount[] // Relación con UserRole
 }
 
 model UserEvent {
@@ -68,11 +86,20 @@ model UserEvent {
 }
 
 model UserRole {
-  id       String @id @default(uuid()) @map("_id")
-  userId   String
-  roleName String
-  eventId  String
-  User     User   @relation(fields: [userId], references: [id])
+  id           String                @id @default(uuid()) @map("_id")
+  userId       String
+  roleName     String
+  eventId      String
+  User         User                  @relation(fields: [userId], references: [id])
+  bankAccounts UserRoleBankAccount[] // Relación con BankAccount
+}
+
+model UserRoleBankAccount {
+  id            String      @id @default(uuid()) @map("_id")
+  userRoleId    String
+  bankAccountId String
+  UserRole      UserRole    @relation(fields: [userRoleId], references: [id])
+  BankAccount   BankAccount @relation(fields: [bankAccountId], references: [id])
 }
 
 model EventBankAccount {

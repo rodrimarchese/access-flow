@@ -37,4 +37,10 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/deploym
 
 ## prisma
 
+Formatear:
+
+`npx prisma format`
+
+Generar cambios en el schema:
+
 `npx prisma generate`
