@@ -35,12 +35,29 @@ The easiest way to deploy your Next.js app is to use the [Vercel Platform](https
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
 
-## prisma
+## Database
 
-Formatear:
+# prisma
 
-`npx prisma format`
+`npx prisma generate` para generar el cliente de la base de datos. Guarda los cambios en `prisma/schema.prisma` y ejecuta este comando para aplicarlos.
+`npx prisma db push` para aplicar los cambios en el esquema de la base de datos.
+`npx prisma format` para formatear el archivo `schema.prisma`.
 
-Generar cambios en el schema:
+Al usar prisma, si pones `npx prisma studio` , se ejecutará un servidor local que te permitirá ver y modificar la base de datos.
+(Para esto, primero debes haber ejecutado `npx prisma generate`)
+[ `localhost:5555` ]
 
-`npx prisma generate`
+## Estilo de Código y Pre-commits
+
+Lo instale con : `npx husky-init && npm install`
+Para asegurar la consistencia en el estilo de nuestro código y facilitar la colaboración, hemos integrado Prettier y Husky en el proyecto.
+
+### Prettier
+
+Prettier es una herramienta para formatear automáticamente nuestro código siguiendo un conjunto de reglas predefinidas. Esto nos ayuda a mantener un estilo coherente y a evitar discusiones sobre formatos en las revisiones de código.
+
+Para formatear el código manualmente, ejecutá:
+
+```bash
+npm run format
+```
